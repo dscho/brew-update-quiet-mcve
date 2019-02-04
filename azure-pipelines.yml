@@ -1,0 +1,5 @@
+jobs:
+- job: macOS
+  pool: Hosted macOS
+  steps:
+  - bash: brew update --quiet
