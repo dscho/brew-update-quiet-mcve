@@ -2,4 +2,4 @@ jobs:
 - job: macOS
   pool: Hosted macOS
   steps:
-  - bash: brew update --quiet
+  - bash: brew config && brew doctor && brew update --quiet
