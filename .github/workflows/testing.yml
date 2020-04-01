@@ -1,0 +1,13 @@
+name: testing
+
+on:
+  release:
+    types:
+      created
+
+jobs:
+  build:
+    if: true
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '${{toJSON(github)}}'
