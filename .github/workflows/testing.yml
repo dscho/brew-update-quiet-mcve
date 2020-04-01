@@ -1,0 +1,42 @@
+name: testing
+
+on: push
+
+env:
+  BUILD_ONLY: "${{github.event.client_payload.build_only}}"
+
+jobs:
+  build:
+    if: true
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        artifact:
+          - name: installer
+      fail-fast: true
+    steps:
+      - name: Determine whether this job should be skipped
+        shell: python
+        run: |
+          import os
+          if ("BUILD_ONLY" in os.environ) and len([x for x in os.environ["BUILD_ONLY"].split(",") if "installer-x86_64".startswith(x)]) == 0:
+            print(":set-env name=SKIP::true")
+      - run: |
+          echo "build only: '$BUILD_ONLY'"
+        if: env.SKIP != 'true'
+      - name: Prepare home directory for code-signing
+        env:
+          CODESIGN_P12: ${{secrets.CODESIGN_P12}}
+          CODESIGN_PASS: ${{secrets.CODESIGN_PASS}}
+        if: env.SKIP != 'true'
+        shell: bash
+        run: |
+          set -x
+          echo "contains: '${{(matrix.artifact.name == 'installer' || matrix.artifact.name == 'portable')}}'"
+          echo "p12: '${{env.CODESIGN_P12}}'"
+          mkdir -p home/.sig &&
+          echo "p12: '$CODESIGN_P12'"
+          echo "pass: '$CODESIGN_PASS'"
+          echo "$CODESIGN_P12" | tr % '\n' | base64 -d >home/.sig/codesign.p12 &&
+          echo "$CODESIGN_PASS" >home/.sig/codesign.pass &&
+          git config --global alias.signtool '!sh "/usr/src/build-extra/signtool.sh"'
