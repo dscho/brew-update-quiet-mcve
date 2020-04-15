@@ -1,0 +1,14 @@
+name: dispatch-test
+
+on:
+  repository_dispatch:
+    types:
+      - test
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: github
+        run: echo "${{toJSON(github)}}"
+      - run: env
