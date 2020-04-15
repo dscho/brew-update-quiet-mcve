@@ -1,0 +1,10 @@
+name: tmate-windows
+
+on:
+  - workflow_dispatch
+
+jobs:
+  tmate:
+    runs-on: windows-latest
+    steps:
+      - uses: dscho/action-tmate@v3
