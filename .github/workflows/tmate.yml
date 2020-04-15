@@ -1,0 +1,10 @@
+name: tmate-windows
+
+on:
+  - repository_dispatch
+
+jobs:
+  dispatch:
+    runs-on: windows-latest
+    steps:
+      - uses: dscho/action-tmate@v3
