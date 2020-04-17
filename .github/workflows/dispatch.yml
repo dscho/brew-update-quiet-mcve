@@ -9,6 +9,18 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: github
-        run: echo "${{toJSON(github)}}"
-      - run: env
+      - name: Log Into Azure
+        shell: pwsh
+        run: |
+          $job = Start-Job -ScriptBlock {az login --tenant a4fceaa8-4185-4935-9800-f62d47f37e01 --allow-no-subscriptions --use-device-code 2>&1}
+          while ($job.state -ne "Completed") {
+            Receive-Job -Keep $job
+            sleep 5
+          }
+      - uses: Azure/get-keyvault-secrets@v1.0
+        with:
+          keyvault: "keyvault-first-test"
+          secrets: 'NewSuperSecret'
+        id: secrets
+      - name: Show
+        run: echo "${{steps.secrets.outputs.NewSuperSecret}}"
