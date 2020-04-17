@@ -1,6 +1,9 @@
 name: testing
 
-on: push
+on:
+  push:
+    branches:
+      - disable-for-now
 
 env:
   BUILD_ONLY: "${{github.event.client_payload.build_only}}"
