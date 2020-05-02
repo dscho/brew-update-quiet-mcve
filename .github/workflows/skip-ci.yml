@@ -10,12 +10,13 @@ on:
 
 jobs:
   build:
-    if: "!contains(join(github.event.commits.*.message, github.even.pull_request.*), '[skip ci]')"
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]') && !contains(toJSON(github.event.pull_request), '[skip pr]')"
     runs-on: ubuntu-latest
     steps:
       - run: echo '${{toJSON(github.event)}}'
       - run: echo '${{toJSON(github.event.commits.*.message)}}'
-      - run: echo '${{toJSON(github.even.pull_request.*)}}'
-      - run: echo '${{join(toJSON(github.event.commits.*.message), toJSON(github.even.pull_request.*))}}'
-      - run: echo '${{toJSON(join(toJSON(github.event.commits.*.message), toJSON(github.even.pull_request.*)))}}'
-      - run: echo '${{!contains(toJSON(join(toJSON(github.event.commits.*.message), toJSON(github.even.pull_request.*))), '[skip ci]')}}'
+      - run: echo '${{toJSON(github.event.pull_request)}}'
+      - run: echo '${{join(toJSON(github.event.commits.*.message), toJSON(github.event.pull_request))}}'
+      - run: echo '${{format('{0}{1}', toJSON(github.event.commits.*.message), toJSON(github.event.pull_request))}}'
+      - run: echo '${{!contains(toJSON(github.event.commits.*.message), '[skip ci]')}}'
+      - run: echo '${{!contains(format('{0}{1}', toJSON(github.event.commits.*.message), toJSON(github.event.pull_request)), '[skip ci]')}}'
