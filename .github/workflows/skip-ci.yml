@@ -1,0 +1,21 @@
+name: skip CI
+
+on:
+  push:
+    branches:
+      - skip-ci
+  pull_request:
+    branches:
+      - skip-ci
+
+jobs:
+  build:
+    if: "!contains(join(github.event.commits.*.message, github.even.pull_request.*), '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '${{toJSON(github.event)}}'
+      - run: echo '${{toJSON(github.event.commits.*.message)}}'
+      - run: echo '${{toJSON(github.even.pull_request.*)}}'
+      - run: echo '${{join(toJSON(github.event.commits.*.message), toJSON(github.even.pull_request.*))}}'
+      - run: echo '${{toJSON(join(toJSON(github.event.commits.*.message), toJSON(github.even.pull_request.*)))}}'
+      - run: echo '${{!contains(toJSON(join(toJSON(github.event.commits.*.message), toJSON(github.even.pull_request.*))), '[skip ci]')}}'
